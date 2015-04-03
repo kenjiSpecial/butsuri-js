@@ -30,8 +30,6 @@ var App = function() {
     this.mObjects.push(ball);
   }
 
-
-
   var floor0 = new Floor(window.innerWidth /2 - wid/2, window.innerHeight/5 * 1.5 - hig/2-30, wid, hig);
   floor0.setVelTheta(1/30*Math.PI);
 

@@ -18,7 +18,7 @@ var App = function() {
 
   this.mObjects = [];
 
-  var wid = window.innerHeight / 5;
+  var wid = 300;
   var hig = 30;
 
   for(var ii = 0; ii < 80; ii++){
@@ -30,34 +30,38 @@ var App = function() {
     this.mObjects.push(ball);
   }
 
-  var floor0 = new Floor(window.innerWidth /2 - wid/2, window.innerHeight/5 * 1.5 - hig/2-30, wid, hig);
-  floor0.setVelTheta(1/30*Math.PI);
+  var floor0 = new Floor(window.innerWidth /2 - wid/2, window.innerHeight/5 * 4 - hig, wid, hig);
+  //floor0.setVelTheta(1/30*Math.PI);
 
-  var floor1 = new Floor(window.innerWidth /2 - wid/2 + wid, window.innerHeight/5 * 2.5 - hig/2, wid, hig);
-  floor1.setVelTheta(-1/60*Math.PI);
+  var floor1 = new Floor(window.innerWidth /2 - wid/2 + wid - 100, window.innerHeight/5 * 4 - hig/2 -50, wid, hig);
+  floor1.theta = -Math.PI/10;
+  //floor1.setVelTheta(-1/60*Math.PI);
 
-  var floor3 = new Floor(window.innerWidth /2 - wid/2 - wid, window.innerHeight/5 * 2.5 - hig/2, wid, hig);
-  floor3.setVelTheta(1/60*Math.PI);
+  var floor3 = new Floor(window.innerWidth /2 - wid/2 - wid +  100, window.innerHeight/5 * 4 - hig/2 - 50, wid, hig);
+  floor3.theta = Math.PI/10;
+  //floor3.setVelTheta(1/60*Math.PI);
 
-  var floor2 = new Floor(window.innerWidth/2 - wid/2, window.innerHeight/5 * 3. - hig/2 + 30, wid, hig);
-  floor2.setVelTheta(1/30*Math.PI);
+  var floor2 = new Floor(window.innerWidth/2 - wid/2, window.innerHeight/5 * 4. - 400, wid, hig);
+  floor2.theta = Math.PI/10;
+  //floor2.setVelTheta(1/30*Math.PI);
 
 
 
   this.mObjects.push(floor0);
   this.mObjects.push(floor1);
   this.mObjects.push(floor2);
-  this.mObjects.push(floor3);
+  this.mObjects.push(floor3)
 };
 
 App.prototype.render = function() {
-
+  this.contacts = this.collide();
+  solver(this.contacts);
+  
   for(var ii in this.mObjects){
     this.mObjects[ii].update(CONSTANTS.timeStep);
   }
 
-  this.contacts = this.collide();
-  solver(this.contacts);
+
 
   this.draw();
 };

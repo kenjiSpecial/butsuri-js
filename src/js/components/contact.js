@@ -29,8 +29,6 @@ Contact.prototype = {
     this.mB.vel.subtractMultipledVector(this.mB.invMass, imp);
   },
 
-
-
 };
 
 

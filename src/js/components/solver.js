@@ -1,4 +1,4 @@
-var numInteraction = 5;
+var numInteraction = 1;
 var solveType;
 
 var CONSTANTS = require('./constants.js');
@@ -21,7 +21,9 @@ function speculativeSolver(con, n, relNv) {
     var remove = relNv +   con.mDist / CONSTANTS.timeStep;
 
     if (remove < 0) {
+
         var mag = remove / (con.mA.invMass + con.mB.invMass);
+        if(con.mA.invMass == 0 || con.mB.invMass == 0) mag *= 1.25;
         var imp = con.mNormal.copy().multiply(mag);
 
         con.applyImpulses(imp);
@@ -31,13 +33,31 @@ function speculativeSolver(con, n, relNv) {
 /**
 */
 function discreteSolver ( con, n, relNv ) {
-  var remove = relNv + 1.1 * (con.mDist + 1) / CONSTANTS.timeStep;
+  var remove = relNv + .4 * (con.mDist + 1) / CONSTANTS.timeStep;
 
-  if(remove < 0){
+  if(con.mDist < 0 && remove < 0){
+
     var mag = remove / (con.mA.invMass + con.mB.invMass);
     var imp = con.mNormal.copy().multiply(mag);
 
     con.applyImpulses(imp);
+  }
+}
+
+function discreteSequential(con, n, relNv){
+  if(con.mDist < 0){
+    var remove = relNv + .4 * (con.mDist + 1) / CONSTANTS.timeStep;
+
+    var mag = remove / (con.mA.invMass + con.mB.invMass);
+    var newImpulse = Math.min(mag + con.mImpulse, 0)
+    var change = newImpulse - con.mImpulse;
+
+    var imp = con.mNormal.copy().multiply(change);
+
+    con.applyImpulses(imp);
+
+    con.mImpulse = newImpulse;
+
   }
 }
 

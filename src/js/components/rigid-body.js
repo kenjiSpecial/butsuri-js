@@ -11,6 +11,9 @@ var CONSTANTS = require('./constants.js');
 var RigidBody = function( mass, width, height, pos, vel ) {
   //if(!instanceOf velVector) this.velVector =
   this.mass = mass;
+  if(this.mass == 0) this.invMass = 0;
+  else               this.invMass = 1 / mass;
+
   this.width = width;
   this.height = height;
   this.pos = pos;
@@ -23,8 +26,8 @@ RigidBody.prototype.update = function(dt) {
 
   // --------------------
 
-  this.vel.x += this.force.x / this.mass;
-  this.vel.y += this.force.y / this.mass;
+  this.vel.x += this.force.x * this.invMass;
+  this.vel.y += this.force.y * this.invMass;
 
   // ====================
 

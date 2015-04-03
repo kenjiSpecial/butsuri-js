@@ -19,7 +19,7 @@
     "domready": "^1.0.7",
     "draw-triangles-2d": "^1.0.0",
     "gl-vec2": "^1.0.0",
-    "ks-vector": "0.0.9",
+    "ks-vector": "^0.1.0",
     "raf": "^2.0.4",
     "raf-loop": "^1.0.1",
     "randf": "^1.0.0"

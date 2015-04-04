@@ -1,4 +1,5 @@
 var Vector2 = require('ks-vector').Vector2;
+var Matrix = require('./matrix23.js');
 var CONSTANTS = require('./constants.js');
 
 /**
@@ -14,8 +15,14 @@ var RigidBody = function( mass, width, height, pos, vel ) {
   if(this.mass == 0) this.invMass = 0;
   else               this.invMass = 1 / mass;
 
+  this.matrix = new Matrix();
+
   this.width = width;
   this.height = height;
+  
+  this.angle = 0;
+  this.angleVel = 0;
+
   this.pos = pos;
   this.vel = vel;
 
@@ -25,9 +32,7 @@ var RigidBody = function( mass, width, height, pos, vel ) {
 RigidBody.prototype.update = function(dt) {
 
   // --------------------
-
-  this.vel.x += this.force.x * this.invMass;
-  this.vel.y += this.force.y * this.invMass;
+  this.angle += this.angleVel * dt;
 
   // ====================
 
@@ -55,6 +60,28 @@ RigidBody.prototype.getClosestPoints = function(rb) {
 RigidBody.prototype.generateMotionAABB = function() {
 
 };
+
+Object.defineProperty(RigidBody.prototype, "pos", {
+  get : function() {
+    return this.matrix.pos;
+  },
+
+  set : function(vector) {
+    this.matrix.pos = vector;
+  }
+});
+
+Object.defineProperty(RigidBody.prototype, 'angle', {
+  get : function(){
+    return this.matrix.angle;
+  },
+
+  set : function(angle) {
+    this.matrix.setAngle(angle);
+  }
+
+});
+
 
 
 module.exports = RigidBody;

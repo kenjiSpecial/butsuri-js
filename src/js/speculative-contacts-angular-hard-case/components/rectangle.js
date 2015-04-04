@@ -17,10 +17,17 @@ var Rectangle = function(mass, x, y, wid, hig) {
 
     this.thetaVelocity = 0;
     this.theta = 0;
+    /*
     this.matrix = new Matrix();
     this.matrix.set(this.theta, 0, 0);
     this.halfExtendMinus = new Vector2( -wid/2, -hig/2 );
     this.halfExtendPlus  = new Vector2(  wid/2,  hig/2 );
+    */
+
+    this.halfExtents = new Vector2(this.width/2, this.height/2);
+
+
+
 }
 
 Rectangle.prototype = Object.create(RigidBody.prototype);
@@ -31,8 +38,8 @@ Rectangle.prototype.setVelTheta = function(val) {
 }
 
 Rectangle.prototype.update = function(dt) {
-  this.theta += this.thetaVelocity;
-  this.matrix.set(this.theta, 0, 0);
+  //this.theta += this.thetaVelocity;
+  //this.matrix.set(this.theta, 0, 0);
 
   RigidBody.prototype.setGravity.call(this);
   RigidBody.prototype.update.call(this, dt);
@@ -124,6 +131,11 @@ Rectangle.prototype.getClosestPoints = function(rBody) {
 
   return contacts;
 };
+
+Rectangle.prototype.generateMotionAABB = function(dt) {
+  // get bounds now
+  // body
+}
 
 
 module.exports = Rectangle;

@@ -1,18 +1,30 @@
 var Vector2 = require('ks-vector').Vector2;
 
 var Matrix23 = function(){
+  this.angle = 0;
   this.row0 = new Vector2(1, 0);
   this.row1 = new Vector2(0, 1);
   this.pos  = new Vector2();
 };
+
+
+/**
+* @param {Number} angle
+*/
+
+Matrix23.prototype.setAngle = function( angle ) {
+  this.angle = angle;
+  this.row0 = this.row0.fromAngle(angle);
+  this.row1 = this.row0.perp();
+}
+
 
 /**
 * @param {Number} angle
 * @param {Vector2} pos
 */
 Matrix23.prototype.setAngleAndPos = function( angle, pos) {
-  this.row0 = new Vector2().fromAngle(angle);
-  this.row1 = this.row0.perp();
+  this.setAngle(angle);
   this.pos  = pos;
 };
 

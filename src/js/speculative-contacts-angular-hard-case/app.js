@@ -26,9 +26,24 @@ var App = function() {
   this.mObjects.push(box);
 };
 
-App.prototype.render = function() {
+App.prototype.generateMotionBounds = function(dt) {
   for(var ii in this.mObjects){
-    this.mObjects[ii].update(CONSTANTS.timeStep);
+    this.mObjects[ii].generateMotionAABB(dt);
+  }
+
+};
+
+App.prototype.render = function() {
+  var dt = CONSTANTS.timeStep;
+
+  // ---------------
+  this.generateMotionBounds(dt);
+  // ---------------
+
+  //var contacts = Collide();
+
+  for(var ii in this.mObjects){
+    this.mObjects[ii].update(dt);
   }
 
 

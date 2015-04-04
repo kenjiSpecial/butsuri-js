@@ -18,6 +18,10 @@ Ball.prototype.constructor = Ball;
 Ball.prototype.update = function( dt ) {
 
   RigidBody.prototype.setGravity.call(this);
+  
+  this.vel.x += this.force.x * this.invMass;
+  this.vel.y += this.force.y * this.invMass;
+
   RigidBody.prototype.update.call(this, dt);
 
 }

@@ -12,9 +12,11 @@ Box.prototype = Object.create(Rectangle.prototype);
 Box.prototype.constructor = Box;
 
 Box.prototype.update = function(dt) {
-  console.log('update');
-  // body...
   Rectangle.prototype.setGravity.call(this);
+
+  this.vel.x += this.force.x * this.invMass;
+  this.vel.y += this.force.y * this.invMass;
+
   Rectangle.prototype.update.call(this, dt);
 }
 

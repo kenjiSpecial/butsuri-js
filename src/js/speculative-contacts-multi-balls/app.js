@@ -45,8 +45,6 @@ var App = function() {
   floor2.theta = Math.PI/10;
   //floor2.setVelTheta(1/30*Math.PI);
 
-
-
   this.mObjects.push(floor0);
   this.mObjects.push(floor1);
   this.mObjects.push(floor2);

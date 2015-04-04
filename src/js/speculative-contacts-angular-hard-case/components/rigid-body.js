@@ -19,9 +19,9 @@ var RigidBody = function( mass, width, height, pos, vel ) {
 
   this.width = width;
   this.height = height;
-  
+
   this.angle = 0;
-  this.angleVel = 0;
+  this.angularVel = 0;
 
   this.pos = pos;
   this.vel = vel;
@@ -32,7 +32,7 @@ var RigidBody = function( mass, width, height, pos, vel ) {
 RigidBody.prototype.update = function(dt) {
 
   // --------------------
-  this.angle += this.angleVel * dt;
+  this.angle += this.angularVel * dt;
 
   // ====================
 

@@ -6,13 +6,17 @@ module.exports = {
   flipContacts : function(contacts) {
       for (var ii = 0; ii < contacts.length; ii++) {
 
-        var tempMB = contacts[ii].mB
-        contacts[ii].mB = contacts[ii].mA;
-        contacts[ii].mA = tempMB;
+        var tempB = contacts[ii].B
+        contacts[ii].B = contacts[ii].A;
+        contacts[ii].A = tempB;
 
-        var tempMPb = contacts[ii].mPb;
-        contacts[ii].mPb = contacts[ii].mPa;
-        contacts[ii].mPa = tempMPb;
+        var tempPb = contacts[ii].Pb;
+        contacts[ii].Pb = contacts[ii].Pa;
+        contacts[ii].Pa = tempPb;
+
+        var tempV = contacts[ii].rb;
+        contacts[ii].rb = contacts[ii].ra;
+        contacts[ii].ra = tempV;
 
         contacts[ii].mNormal.x *= -1;
         contacts[ii].mNormal.y *= -1;

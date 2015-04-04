@@ -7,7 +7,14 @@ var utils   = require('./utils.js');
 
 var Ball = function( _mass, _rad, _pos, _vel ) {
   RigidBody.call(this, _mass, _rad, _rad, _pos, _vel)
-  this.radius = _rad;
+  this.rad = _rad;
+
+  if(this.invMass > 0){
+    var I = this.mass * this.rad * this.rad / 4;
+    this.invI = 1 / I;
+  }else{
+    this.invI = 0;
+  }
 
 };
 
@@ -18,7 +25,7 @@ Ball.prototype.constructor = Ball;
 Ball.prototype.update = function( dt ) {
 
   RigidBody.prototype.setGravity.call(this);
-  
+
   this.vel.x += this.force.x * this.invMass;
   this.vel.y += this.force.y * this.invMass;
 
@@ -28,19 +35,37 @@ Ball.prototype.update = function( dt ) {
 
 Ball.prototype.draw = function(ctx) {
 
+  ctx.save();
+
+  ctx.translate(this.pos.x, this.pos.y);
+  ctx.rotate(this.angle);
+
   ctx.fillStyle = "#000000"
   ctx.beginPath();
-  ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
+  ctx.arc( 0, 0, this.rad, 0, 2 * Math.PI);
   ctx.fill();
 
+  ctx.strokeStyle = "#ffffff";
+  ctx.beginPath();
+  ctx.moveTo( -2, 0);
+  ctx.lineTo(  2, 0);
+  ctx.stroke();
 
-  if(this.pos.x > window.innerWidth + this.radius * 2 || this.pos.x < 0 - this.radius * 2 || this.pos.y + this.radius*2 > window.innerHeight + this.rad * 2){
+  ctx.beginPath();
+  ctx.moveTo(0, -2);
+  ctx.lineTo(0, 2);
+  ctx.stroke();
+
+  ctx.restore();
+
+
+  if(this.pos.x > window.innerWidth + this.rad * 2 || this.pos.x < 0 - this.rad * 2 || this.pos.y + this.rad*2 > window.innerHeight + this.rad * 2){
     this.reset();
   }
 };
 
 Ball.prototype.reset = function() {
-  this.pos = new Vector2(window.innerWidth/2 - 100 + 200 * Math.random(), -this.radius * 2 - 400 * Math.random());
+  this.pos = new Vector2(window.innerWidth/2 - 100 + 200 * Math.random(), -this.rad * 2 - 400 * Math.random());
   this.vel = new Vector2();
 }
 

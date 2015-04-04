@@ -15,8 +15,6 @@ var Rectangle = function(mass, x, y, wid, hig) {
 
     Ball = require('./ball.js');
 
-    this.thetaVelocity = 0;
-    this.theta = 0;
     /*
     this.matrix = new Matrix();
     this.matrix.set(this.theta, 0, 0);
@@ -33,10 +31,6 @@ var Rectangle = function(mass, x, y, wid, hig) {
 Rectangle.prototype = Object.create(RigidBody.prototype);
 Rectangle.prototype.constructor = Rectangle;
 
-Rectangle.prototype.setVelTheta = function(val) {
-  this.thetaVelocity = val;
-}
-
 Rectangle.prototype.update = function(dt) {
   //this.theta += this.thetaVelocity;
   //this.matrix.set(this.theta, 0, 0);
@@ -52,7 +46,7 @@ Rectangle.prototype.draw = function(ctx) {
   ctx.strokeStyle = "#000000";
   ctx.beginPath();
   ctx.translate(this.pos.x, this.pos.y);
-  ctx.rotate(this.theta);
+  ctx.rotate(this.angle);
   ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
 
   ctx.restore();

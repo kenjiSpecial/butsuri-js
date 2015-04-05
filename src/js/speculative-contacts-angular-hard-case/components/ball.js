@@ -12,13 +12,14 @@ var Ball = function( _mass, _rad, _pos, _vel ) {
   if(this.invMass > 0){
     var I = this.mass * this.rad * this.rad / 4;
     this.invI = 1 / I;
+    console.log(this.invI);
   }else{
     this.invI = 0;
   }
 
 };
 
-Ball.prototype = Object.create(Ball.prototype);
+Ball.prototype = Object.create(RigidBody.prototype);
 Ball.prototype.constructor = Ball;
 
 
@@ -47,13 +48,13 @@ Ball.prototype.draw = function(ctx) {
 
   ctx.strokeStyle = "#ffffff";
   ctx.beginPath();
-  ctx.moveTo( -2, 0);
-  ctx.lineTo(  2, 0);
+  ctx.moveTo( -5, 0);
+  ctx.lineTo(  5, 0);
   ctx.stroke();
 
   ctx.beginPath();
-  ctx.moveTo(0, -2);
-  ctx.lineTo(0, 2);
+  ctx.moveTo(0, -5);
+  ctx.lineTo(0, 5);
   ctx.stroke();
 
   ctx.restore();
@@ -88,15 +89,15 @@ Ball.prototype.getClosestPoints = function(rBody) {
 
     // generate closes points
     var pa = new Vector2();
-    pa.x = ballA.pos.x + n.x * ballA.radius;
-    pa.y = ballA.pos.y + n.y * ballA.radius;
+    pa.x = ballA.pos.x + n.x * ballA.rad;
+    pa.y = ballA.pos.y + n.y * ballA.rad;
 
     var pb = new Vector2();
-    pb.x = ballB.pos.x - n.x * ballB.radius;
-    pb.y = ballB.pos.y - n.y * ballB.radius;
+    pb.x = ballB.pos.x - n.x * ballB.rad;
+    pb.y = ballB.pos.y - n.y * ballB.rad;
 
     // getdistance
-    var dist = delata.getLength() - (ballA.radius + ballB.radius);
+    var dist = delata.getLength() - (ballA.rad + ballB.rad);
 
     contacts.push(new Contact( ballA, ballB, pa, pb, n, dist ));
 
@@ -112,6 +113,8 @@ Ball.prototype.getClosestPoints = function(rBody) {
 
   return contacts;
 };
+
+
 
 
 

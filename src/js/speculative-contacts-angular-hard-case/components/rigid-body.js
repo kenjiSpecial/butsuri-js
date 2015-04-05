@@ -57,8 +57,8 @@ RigidBody.prototype.getClosestPoints = function(rb) {
   console.error("===== NO getClosestPoints IN RigidBody =====");
 };
 
-RigidBody.prototype.generateMotionAABB = function() {
-
+RigidBody.prototype.generateMotionAABB = function(dt) {
+  
 };
 
 Object.defineProperty(RigidBody.prototype, "pos", {

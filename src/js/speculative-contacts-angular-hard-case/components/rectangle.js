@@ -15,15 +15,30 @@ var Rectangle = function(mass, x, y, wid, hig) {
 
     Ball = require('./ball.js');
 
-    /*
-    this.matrix = new Matrix();
-    this.matrix.set(this.theta, 0, 0);
-    this.halfExtendMinus = new Vector2( -wid/2, -hig/2 );
-    this.halfExtendPlus  = new Vector2(  wid/2,  hig/2 );
-    */
+    this.halfExtents = new Vector2( this.width/2, this.height/2 );
+    this.halfExtentsMinus = new Vector2( -this.width/2, -this.height/2);
 
-    this.halfExtents = new Vector2(this.width/2, this.height/2);
+    this.localSpacePoints = [
+        new Vector2(  this.halfExtents.x, -this.halfExtents.y),
+        new Vector2( -this.halfExtents.x, -this.halfExtents.y),
+        new Vector2( -this.halfExtents.x,  this.halfExtents.y),
+        new Vector2(  this.halfExtents.x,  this.halfExtents.y)
+    ];
 
+    this.localSpaceNormals = [];
+
+    for(var ii = 0; ii < this.localSpacePoints.length; ii++){
+      var nextNum = (ii + 1) % this.localSpacePoints.length;
+      this.localSpaceNormals[ii] = this.localSpacePoints[nextNum].copy().subtract(this.localSpacePoints[ii]).getNormal().perp();
+    }
+
+    // calculate the inverse inertia tensor
+    if(this.invMass > 0){
+      var I = this.mass * (this.width * this.width + this.height * this.height) / 12;
+      this.invI = 1 / I;
+    }else{
+      this.invI = 0;
+    }
 
 
 }
@@ -50,7 +65,6 @@ Rectangle.prototype.draw = function(ctx) {
   ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
 
   ctx.restore();
-
 
 
   //this.debugDraw(ctx);
@@ -85,43 +99,34 @@ Rectangle.prototype.getClosestPoints = function(rBody) {
     var rectangelA = this;
     var ballB      = rBody;
 
-    var xPos = ballB.pos.x - rectangelA.pos.x;
-    var yPos = ballB.pos.y - rectangelA.pos.y;
-    var delta = new Vector2();
-    delta.set(xPos, yPos);
-    //console.log(delta.x + ", " + delta.y);
+    var delta = ballB.pos.copy().subtract(rectangelA.pos);
 
-    this.matrix.set(this.theta, 0, 0);
-    var rotatedDeltaX =  delta.x * this.matrix.cos + delta.y * this.matrix.sin;
-    var rotatedDeltaY = -delta.x * this.matrix.sin + delta.y * this.matrix.cos;
+    var rotatedVector = delta.rotate(-this.angle);
 
-    var rotatedVector = new Vector2();
-    rotatedVector.set(rotatedDeltaX, rotatedDeltaY);
-    //console.log(rotatedVector.x + ', ' + rotatedVector.y);
+    var dClamped = rotatedVector.clamp(this.halfExtentsMinus, this.halfExtents);
 
-    var dClamped = rotatedVector.clamp(this.halfExtendMinus, this.halfExtendPlus);
-
-    var clamped  = dClamped.rotate(this.theta);
+    var clamped  = dClamped.rotate(this.angle);
     var clamedP = this.pos.copy().add(clamped);
 
-
-    var d = new Vector2();
-    d.set( ballB.pos.x - clamedP.x, ballB.pos.y - clamedP.y );
+    var d = new Vector2(ballB.pos.x - clamedP.x, ballB.pos.y - clamedP.y);
     var n = d.getNormal();
 
     var pa = clamedP;
-    var pb = ballB.pos.copy().subtractMultipledVector(ballB.radius, n);
+    var pb = ballB.pos.copy().subtractMultipledVector(ballB.rad, n);
     //console.log(pb.x + ", " + pb.y);
 
-    var dist = d.getLength() - ballB.radius;
+    var dist = d.getLength() - ballB.rad;
 
 
     this.clamedP = clamedP;
     this.d = d;
     this.pb =pb;
 
+
     contacts.push(new Contact( rectangelA, ballB, pa, pb, n, dist ));
   }
+
+  console.log(rBody instanceof Rectangle);
 
   return contacts;
 };

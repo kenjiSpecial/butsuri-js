@@ -21,9 +21,12 @@ var App = function() {
   this.mObjects = [];
 
   var floor = new Floor(20, window.innerHeight - 100, window.innerWidth - 40, 20);
-  var box = new  Box(10, window.innerWidth/2 - 30, 30, 60, 60);
+
   this.mObjects.push(floor);
+
+  var box = new Box(window.innerWidth/2 - 50, 10, 100, 100);
   this.mObjects.push(box);
+
 };
 
 App.prototype.generateMotionBounds = function(dt) {
@@ -36,15 +39,18 @@ App.prototype.generateMotionBounds = function(dt) {
 App.prototype.render = function() {
   var dt = CONSTANTS.timeStep;
 
+  for(var ii in this.mObjects){
+    this.mObjects[ii].update(dt);
+  }
+
   // ---------------
   this.generateMotionBounds(dt);
   // ---------------
 
-  //var contacts = Collide();
+  this.contacts = this.collide();
+  solver(this.contacts);
 
-  for(var ii in this.mObjects){
-    this.mObjects[ii].update(dt);
-  }
+
 
 
   this.draw();

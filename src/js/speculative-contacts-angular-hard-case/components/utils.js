@@ -18,8 +18,8 @@ module.exports = {
         contacts[ii].rb = contacts[ii].ra;
         contacts[ii].ra = tempV;
 
-        contacts[ii].mNormal.x *= -1;
-        contacts[ii].mNormal.y *= -1;
+        contacts[ii].normal.x *= -1;
+        contacts[ii].normal.y *= -1;
       }
   }
 };

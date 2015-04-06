@@ -55,7 +55,6 @@ App.prototype.generateMotionBounds = function(dt) {
   for(var ii in this.mObjects){
     this.mObjects[ii].generateMotionAABB(dt);
   }
-
 };
 
 App.prototype.render = function() {
@@ -149,9 +148,7 @@ App.prototype.collide = function() {
             var _contacts = rigidBodyA.getClosestPoints(rigidBodyB);
             contacts = contacts.concat(_contacts);
         }
-
       }
-
     }
   }
 

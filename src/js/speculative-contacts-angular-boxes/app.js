@@ -21,21 +21,33 @@ var App = function() {
 
   this.mObjects = [];
 
-  var floor = new Floor(20, window.innerHeight - 100, window.innerWidth - 40, 20);
-  this.mObjects.push(floor);
+  this.floor = new Floor( window.innerWidth/2 - 200, window.innerHeight - 60, 400, 20);
+  this.mObjects.push(this.floor);
 
-  var floor1 = new Floor( window.innerWidth/2 - 200, window.innerHeight/2, 200, 40)
+  var floor1 = new Floor( window.innerWidth/2 - 200, window.innerHeight/2 + 60, 200, 40)
   floor1.angle = Math.PI / 12;
   this.mObjects.push(floor1);
 
-  var floor2 = new Floor( window.innerWidth/2, window.innerHeight/2 - 100, 200, 40)
-  floor2.angle = -Math.PI / 12;
-  this.mObjects.push(floor2);
+  this.floor2 = new Floor( window.innerWidth/2 , window.innerHeight/2 - 150, 200, 40)
+  this.floor2.angle = -Math.PI / 12;
+  this.mObjects.push(this.floor2);
 
 
-  var box = new Box( 1, window.innerWidth/2 - 50, 10, 50, 40);
-  box.angle = Math.PI/3;
-  this.mObjects.push(box);
+  var self = this;
+
+  function add(){
+    var boxWid = 30 + parseInt(70 * Math.random());
+    var boxHig = 30 + parseInt(70 * Math.random());
+    var yPos = - 50 - boxHig;
+    var xPos = window.innerWidth/2 - 100 + 200 * Math.random();
+    var box = new Box( boxWid*boxHig, xPos, yPos, boxWid, boxHig);
+    box.angle = Math.random() * Math.PI;
+    self.mObjects.push(box)
+
+    if(self.mObjects.length < 12) setTimeout(add, 750);
+  }
+
+  add();
 
 };
 
@@ -49,6 +61,7 @@ App.prototype.generateMotionBounds = function(dt) {
 App.prototype.render = function() {
   var dt = CONSTANTS.timeStep;
 
+  this.floor.loopMovement(dt)
   for(var ii in this.mObjects){
     this.mObjects[ii].update(dt);
   }
@@ -72,8 +85,6 @@ App.prototype.draw = function() {
   for(var ii in this.mObjects){
     this.mObjects[ii].draw(this.ctx);
   }
-
-
 
   return;
 

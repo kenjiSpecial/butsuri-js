@@ -8,8 +8,7 @@ var solver = function(contacts) {
         for (var ii = 0; ii < contacts.length; ii++) {
             var con = contacts[ii];
             var n = con.normal;
-
-            var relNv = con.B.vel.copy().subtract(con.A.vel.copy()).dotProduct(n);
+            var relNv = con.getVelPb().subtract(con.getVelPa()).dotProduct(n);
 
             speculativeSolver(con, n, relNv);
 
@@ -21,11 +20,9 @@ function speculativeSolver(con, n, relNv) {
     var remove = relNv +   con.Dist / CONSTANTS.timeStep;
 
     if (remove < 0) {
-
-        var mag = remove / (con.A.invMass + con.B.invMass);
-        //if(con.mA.invMass == 0 || con.mB.invMass == 0) mag *= 1.25;
-
-        var imp = con.normal.copy().multiply(mag );
+        //console.log(1 / (con.A.invMass + con.B.invMass));
+        var mag = remove *  con.invDenom; // (con.A.invMass + con.B.invMass);
+        var imp = n.copy().multiply(mag );
 
         con.applyImpulses(imp);
     }

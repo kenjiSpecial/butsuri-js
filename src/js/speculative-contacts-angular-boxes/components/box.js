@@ -33,7 +33,7 @@ Box.prototype.draw = function(ctx) {
   ctx.strokeRect(-this.halfWidth, -this.halfHeight, this.width, this.height);
 
   ctx.beginPath();
-  ctx.moveTo( -this.halfWidth, -this.halfHeight)
+  ctx.moveTo( -this.halfWidth, -this.halfHeight )
   ctx.lineTo(  this.halfWidth,  this.halfHeight );
   ctx.stroke();
 
@@ -43,6 +43,24 @@ Box.prototype.draw = function(ctx) {
   ctx.stroke();
 
   ctx.restore();
-}
+
+  if(this.pos.y > window.innerHeight + Math.sqrt(this.width * this.width + this.height * this.height)*2 ){
+    this.reset()
+  }
+
+};
+
+Box.prototype.reset = function() {
+  console.log('reset');
+  var yPos = - 50 - this.height;
+  var xPos = window.innerWidth/2 - 100 + 200 * Math.random();
+
+  this.pos.set(xPos, yPos)
+  this.vel.set(0, 0);
+
+  this.angle = Math.PI * Math.random();
+  this.angularVel = 0;
+};
+
 
 module.exports = Box;

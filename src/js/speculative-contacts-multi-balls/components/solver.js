@@ -10,7 +10,7 @@ var solver = function(contacts) {
             var n = con.mNormal;
 
             var relNv = con.mB.vel.copy().subtract(con.mA.vel.copy()).dotProduct(n);
-
+            
             speculativeSolver(con, n, relNv);
 
         }
@@ -23,7 +23,6 @@ function speculativeSolver(con, n, relNv) {
     if (remove < 0) {
 
         var mag = remove / (con.mA.invMass + con.mB.invMass);
-        //if(con.mA.invMass == 0 || con.mB.invMass == 0) mag *= 1.25;
 
         var imp = con.mNormal.copy().multiply(mag );
 

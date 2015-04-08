@@ -1,5 +1,5 @@
 const raf = require('raf');
-var App = require('./speculative-contacts-angular-boxes/app.js');
+var App = require('./speculative-contacts-contacts-boxes/app');
 var app;
 
 

@@ -1,4 +1,5 @@
 var numInteraction = 3;
+var kFriction = 0.8;
 var solveType;
 
 var CONSTANTS = require('./constants.js');
@@ -8,9 +9,14 @@ var solver = function(contacts) {
         for (var ii = 0; ii < contacts.length; ii++) {
             var con = contacts[ii];
             var n = con.normal;
-            var relNv = con.getVelPb().subtract(con.getVelPa()).dotProduct(n);
+            var dv = con.getVelPb().subtract(con.getVelPa());
 
-            SpeculativeSequential(con, n, relNv);
+            var relNv = dv.dotProduct(n);
+
+            var tangent = n.copy().perp();
+            var tanV = dv.dotProduct(tangent);
+
+            SpeculativeSequential(con, n, relNv, tanV, tangent);
 
         }
     }
@@ -28,7 +34,7 @@ function speculativeSolver(con, n, relNv) {
     }
 }
 
-function SpeculativeSequential ( con, n, relNv ) {
+function SpeculativeSequential ( con, n, relNv, tanV, tangent) {
   var remove = relNv +   con.Dist / CONSTANTS.timeStep;
 
   var mag = remove * con.invDenom;
@@ -40,6 +46,15 @@ function SpeculativeSequential ( con, n, relNv ) {
   con.applyImpulses(imp);
   con.Impulse = newImpulse;
 
+  var absMag = Math.abs(con.Impulse) * kFriction;
+
+  mag = tanV * con.invDenomTan; //Math.min( Math.max(, -absMag ), absMag)
+  newImpulse = Math.min( Math.max(mag + con.ImpulseT, -absMag), absMag);
+  change = newImpulse - con.ImpulseT;
+  imp = tangent.copy().multiply(change);
+
+  con.applyImpulses(imp);
+  con.ImpulseT = newImpulse;
 }
 
 /**

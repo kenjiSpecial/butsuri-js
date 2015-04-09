@@ -58,7 +58,7 @@ RigidBody.prototype.getClosestPoints = function(rb) {
 };
 
 RigidBody.prototype.generateMotionAABB = function(dt) {
-  
+
 };
 
 Object.defineProperty(RigidBody.prototype, "pos", {

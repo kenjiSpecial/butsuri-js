@@ -10,14 +10,15 @@ var Vector2 = require('ks-vector').Vector2;
 *   @param {Vector2} n
 *   @param {Number} dist
 */
-var Contact = function(A, B, pa, pb, n, dist) {
+var Contact = function(A, B, pa, pb, n, dist, k) {
   this.A  = A;
   this.B  = B;
   this.Pa = pa;
   this.Pb = pb;
   this.normal = n;
   this.Dist = dist;
-  this.Impulse = 0;
+  this.Impulse = this.ImpulseT = 0;
+  this.k = k || 1;
 
   this.ra = pa.copy().subtract(A.pos).perp();
   this.rb = pb.copy().subtract(B.pos).perp();
@@ -31,8 +32,15 @@ var Contact = function(A, B, pa, pb, n, dist) {
   var c = ran * ran * A.invI;
   var d = rbn * rbn * B.invI;
 
-
   this.invDenom = 1 / (aInvMass + bInvMass + c + d);
+
+  var t = n.copy().perp();
+  ran = this.ra.dotProduct(t);
+  rbn = this.rb.dotProduct(t);
+  c = ran * ran * A.invI;
+  d = rbn * rbn * B.invI;
+
+  this.invDenomTan = 1 / (aInvMass + bInvMass + c + d);
 
 };
 
@@ -41,13 +49,8 @@ Contact.prototype = {
   * @param {Vector2} imp
   */
   applyImpulses : function(imp) {
-
+    //console.log(imp);
     this.A.vel.addMultipledVector(this.A.invMass, imp);
-    /*
-    console.log('imp');
-    console.log(imp);
-    console.log('vel');
-    console.log(this.B.vel); */
     this.B.vel.subtractMultipledVector(this.B.invMass, imp);
 
     this.A.angularVel += imp.dotProduct(this.ra) * this.A.invI;

@@ -4,6 +4,7 @@ var RigidBody = require('./rigid-body.js');
 var Contact = require('./contact.js');
 var Geometry = require('./geometry.js');
 var AABB = require('./aabb.js');
+var Plane = require('./plane.js');
 var Ball;
 
 var Matrix = require('./matrix23.js');
@@ -48,8 +49,8 @@ Rectangle.prototype = Object.create(RigidBody.prototype);
 Rectangle.prototype.constructor = Rectangle;
 
 Rectangle.prototype.update = function(dt) {
-  //this.theta += this.thetaVelocity;
-  //this.matrix.set(this.theta, 0, 0);
+  // this.theta += this.thetaVelocity;
+  // this.matrix.set(this.theta, 0, 0);
 
   RigidBody.prototype.setGravity.call(this);
   RigidBody.prototype.update.call(this, dt);
@@ -65,15 +66,31 @@ Rectangle.prototype.draw = function(ctx) {
   ctx.beginPath();
   ctx.translate(this.pos.x, this.pos.y);
   ctx.rotate(this.angle);
-  ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
+  if(this.height == 1){
+    //ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
+    ctx.moveTo(-this.width/2, 0);
+    ctx.lineTo(this.width/2, 0);
+    ctx.stroke();
+  }else{
+    ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
+  }
+
 
   ctx.restore();
 
 
-  //this.debugDraw(ctx);
+  this.debugDraw(ctx);
 };
 
 Rectangle.prototype.debugDraw = function(ctx) {
+
+  if(this.pa){
+    console.log(this.pa);
+    ctx.fillStyle = "#ff0000";
+    ctx.beginPath();
+    ctx.arc( this.pa.x, this.pa.y, 10, 0, 2 * Math.PI);
+    ctx.fill();
+  }
 
   /**
   ctx.fillStyle = "#ff0000";
@@ -134,20 +151,60 @@ Rectangle.prototype.getClosestPoints = function(rBody) {
 
     return Geometry.rectRectClosestPoints(this, bRectangle);
   }else if(rBody instanceof Plane){
+    //console.log('rBody instanceof Plane');
+    var planeB = rBody;
 
-    /*
-    var rectangelB = rBody;
+    var worldPArr        = [];
+    var worldDArr        = [];
+    var worldNormalArr   = [];
+    var worldClampedPArr = [];
 
-    var worldP = [];
-    var worldD = [];
+    for(var ii = 0; ii < this.localSpacePoints.length; ii++){
+      var worldP = this.matrix.transformBy(this.localSpacePoints[ii]);
 
+      var worldObj = planeB.getDistance(worldP);
+      var worldD = worldObj.dist;
+      var worldNormal = worldObj.normal;
+      var worldClampedP = worldObj.clampedP;
 
-    for( var ii = 0; ii <  this.localSpacePoints.length; ii++ ){
-        var  worldVector = this.matrix.transformBy(this.localSpacePoints[ii].copy());
-        worldD.push(worldVector) ;
+      worldPArr.push(worldP);
+      worldDArr.push(worldD);
+      worldNormalArr.push(worldNormal);
+      worldClampedPArr.push(worldClampedP);
     }
 
-    this.worldD = worldD; */
+    var closest = -1;
+    var secondClosest = -1;
+    var closestD = 99999;
+    var secondClosestD = 99999;
+
+    for(var ii = 0; ii < worldPArr.length; ii++){
+      if(worldDArr[ii] < closestD){
+        closest = ii;
+        closestD = worldDArr[ii];
+      }
+    }
+
+    // --------------------
+
+    for(var ii = 0; ii < worldPArr.length; ii++){
+      if( ii != closest && worldDArr[ii] < secondClosestD){
+        secondClosest = ii;
+        secondClosestD = worldDArr[ii];
+      }
+    }
+
+
+    this.pa  = worldPArr[closest];
+    this.paP = worldClampedPArr[closest];
+    this.pb  = worldPArr[secondClosest];
+    this.pbP = worldClampedPArr[secondClosest];
+
+    var ca = new Contact( rectangelA, planeB, worldPArr[closest], worldClampedPArr[closest], worldNormalArr[closest], closestD);
+    var cb = new Contact( rectangelA, planeB, worldPArr[secondClosest], worldClampedPArr[secondClosest], worldNormalArr[secondClosest], secondClosestD);
+
+    contacts.push(ca);
+    contacts.push(cb);
   }
 
   return contacts;
@@ -216,7 +273,7 @@ Rectangle.prototype.getSupportVertices = function(direction) {
 *  @param {Vector2} n
 */
 
-Rectangle.prototype.getSecondSupport = function( v, n) {
+Rectangle.prototype.getSecondSupport = function( v, n ) {
     var va = this.getWorldSpacePoint( (v - 1 + this.localSpacePoints.length)%this.localSpacePoints.length );
     var vb = this.getWorldSpacePoint( v );
     var vc = this.getWorldSpacePoint( (v+1)%this.localSpacePoints.length );

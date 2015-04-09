@@ -43,6 +43,34 @@ Box.prototype.draw = function(ctx) {
   ctx.stroke();
 
   ctx.restore();
+
+  if(this.pa){
+    ctx.fillStyle = "#ff0000";
+    ctx.beginPath();
+    ctx.arc(this.pa.x, this.pa.y, 10, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+
+  if(this.pb){
+    ctx.fillStyle = "#ff0000";
+    ctx.beginPath();
+    ctx.arc(this.pb.x, this.pb.y, 10, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+
+  if(this.paP){
+    ctx.fillStyle = "#00ff00";
+    ctx.beginPath();
+    ctx.arc(this.paP.x, this.paP.y, 10, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+
+  if(this.pbP){
+    ctx.fillStyle = "#00ff00";
+    ctx.beginPath();
+    ctx.arc(this.pbP.x, this.pbP.y, 10, 0, 2 * Math.PI);
+    ctx.fill();
+  }
 }
 
 module.exports = Box;

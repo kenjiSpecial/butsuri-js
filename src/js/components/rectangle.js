@@ -11,7 +11,8 @@ var Matrix = require('./matrix23.js');
 
 
 var Rectangle = function(mass, x, y, wid, hig) {
-
+    this.originalX = x;
+    this.originalY = y;
     RigidBody.call(this, mass, wid, hig, new Vector2(x + wid/2, y + hig/2), new Vector2(0, 0));
 
 
@@ -19,6 +20,9 @@ var Rectangle = function(mass, x, y, wid, hig) {
 
     this.halfExtents = new Vector2( this.width/2, this.height/2 );
     this.halfExtentsMinus = new Vector2( -this.width/2, -this.height/2);
+
+    this.anchor = new Vector2(0.5, 0.5);
+
 
     this.localSpacePoints = [
         new Vector2(  this.halfExtents.x, -this.halfExtents.y),
@@ -41,12 +45,35 @@ var Rectangle = function(mass, x, y, wid, hig) {
     }else{
       this.invI = 0;
     }
+};
 
 
-}
+
+
 
 Rectangle.prototype = Object.create(RigidBody.prototype);
 Rectangle.prototype.constructor = Rectangle;
+
+Rectangle.prototype.setAnchor = function( xx, yy ) {
+  this.anchor.x = xx;
+  this.anchor.y = yy;
+
+  this.pos.x = this.anchor.x * this.width + this.originalX;
+  this.pos.y = this.anchor.y * this.height + this.originalY;
+
+  this.halfExtentsMinus.x = - this.width * this.anchor.x;
+  this.halfExtentsMinus.y = - this.height* this.anchor.y;
+
+  this.halfExtents.x = this.width * (1 - this.anchor.x);
+  this.halfExtents.y = this.height * (1 - this.anchor.y);
+
+  this.localSpacePoints = [
+      new Vector2( this.halfExtents.x,       this.halfExtentsMinus.y),
+      new Vector2( this.halfExtentsMinus.x,  this.halfExtentsMinus.y),
+      new Vector2( this.halfExtentsMinus.x,  this.halfExtents.y),
+      new Vector2( this.halfExtents.x,       this.halfExtents.y)
+  ];
+};
 
 Rectangle.prototype.update = function(dt) {
   // this.theta += this.thetaVelocity;
@@ -66,13 +93,32 @@ Rectangle.prototype.draw = function(ctx) {
   ctx.beginPath();
   ctx.translate(this.pos.x, this.pos.y);
   ctx.rotate(this.angle);
+
+  ctx.beginPath();
+  ctx.moveTo( -5, 0);
+  ctx.lineTo( 5, 0);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo( 0, -5);
+  ctx.lineTo( 0, 5);
+  ctx.stroke();
+
+
   if(this.height == 1){
     //ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
     ctx.moveTo(-this.width/2, 0);
     ctx.lineTo(this.width/2, 0);
     ctx.stroke();
   }else{
-    ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
+
+    ctx.moveTo(this.localSpacePoints[0].x, this.localSpacePoints[0].y);
+    ctx.lineTo(this.localSpacePoints[1].x, this.localSpacePoints[1].y);
+    ctx.lineTo(this.localSpacePoints[2].x, this.localSpacePoints[2].y);
+    ctx.lineTo(this.localSpacePoints[3].x, this.localSpacePoints[3].y);
+    ctx.closePath();
+    ctx.strokeStyle = "#000000";
+    ctx.stroke();
   }
 
 
@@ -85,7 +131,6 @@ Rectangle.prototype.draw = function(ctx) {
 Rectangle.prototype.debugDraw = function(ctx) {
 
   if(this.pa){
-    console.log(this.pa);
     ctx.fillStyle = "#ff0000";
     ctx.beginPath();
     ctx.arc( this.pa.x, this.pa.y, 10, 0, 2 * Math.PI);

@@ -1,22 +1,41 @@
 const raf = require('raf');
-var App = require('./app-case01.js');
+var App = require('./apps/app-case04');
 var app;
 
 
 require('domready')(() => {
-  app = new App();
+  var count = 0;
 
+  var link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.type = 'text/css';
+  link.href = 'http://fonts.googleapis.com/css?family=Roboto:700';
+  document.getElementsByTagName('head')[0].appendChild(link);
 
-  var id = raf(function render(){
-    app.render();
+  // Trick from http://stackoverflow.com/questions/2635814/
+  var id;
+  var image = new Image;
+  image.src = link.href;
+  image.onerror = function() {
+    app = new App();
 
-    id = raf(render);
-  });
+    id = raf(function render(){
+      app.render();
+
+      id = raf(render);
+    });
+  };
 
   document.addEventListener('keydown', function(e) {
     switch (e.keyCode) {
       case 27:
-        raf.cancel(id)
+        if(count == 0){
+          raf.cancel(id)
+        }else{
+          app.reset();
+        }
+
+        count++;
         break;
       default:
     }

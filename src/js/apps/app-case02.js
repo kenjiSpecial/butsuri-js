@@ -43,11 +43,12 @@ var App = function() {
     var ball = new Ball( mag, rad, new Vector2(xPos, 0), new Vector2(0, 500));
     self.mObjects.push(ball);
 
-    if(count < 30) setTimeout(loop, 1000);
+    //if(count < 30) setTimeout(loop, 1000);
+    
 
   };
 
-  loop();
+  setTimeout(loop, 1000)
 
   var plane = new Plane(window.innerWidth/2, window.innerHeight, window.innerWidth);
   this.mObjects.push(plane);

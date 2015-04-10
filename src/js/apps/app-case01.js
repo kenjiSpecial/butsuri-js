@@ -21,14 +21,12 @@ var App = function() {
 
   this.mObjects = [];
 
-  var box = new Box(10, window.innerWidth/2 - 50, 0, 100, 100);
+  var box = new Box(100 * 100, window.innerWidth/2 - 50, 0, 100, 100);
   this.mObjects.push(box);
 
   //for(var ii = 0; ii < )
   var self = this;
   var count = 0;
-
-
 
 
   var loop = function(){
@@ -45,7 +43,9 @@ var App = function() {
 
   };
 
-  loop();
+  //loop();
+
+  setTimeout(loop, 1000);
 
   // var ball = new Ball(10, 10, new Vector2(window.innerWidth/2, 0), new Vector2(0, 0));
   // this.mObjects.push(ball);

@@ -57,8 +57,6 @@ function SpeculativeSequential ( con, n, relNv, tanV, tangent) {
 
   con.applyImpulses(imp);
   con.ImpulseT = newImpulse;
-
-  // console.log(ssss);
 }
 
 /**

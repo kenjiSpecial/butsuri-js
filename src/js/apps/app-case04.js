@@ -1,13 +1,15 @@
-var Ball      = require('./components/ball.js');
-var Floor     = require('./components/floor.js');
-var Box       = require('./components/box.js');
-var AABB      = require('./components/aabb.js');
+var Ball      = require('../app-components/app04/ball.js');
+var Floor     = require('../components/floor.js');
+var Box       = require('../components/box.js');
+var AABB      = require('../components/aabb.js');
+var CONSTANTS = require('../components/constants.js');
+var solver    = require('../components/solver.js');
+
+var Wiper = require('../app-components/app04/wiper.js');
+var WiperRectangle = require('../app-components/app04/wiper-rectangle.js');
 
 var Vector2   = require('ks-vector').Vector2;
-var CONSTANTS = require('./components/constants.js');
-var solver    = require('./components/solver.js');
 var cw, ch;
-
 
 var App = function() {
   this.canvas = document.getElementById('c');
@@ -19,6 +21,17 @@ var App = function() {
   this.ctx    = this.canvas.getContext('2d');
 
   this.mObjects = [];
+
+  var wiper = new Wiper(this.mObjects);
+
+  for(var ii = 0 ; ii < 100; ii++){
+    var xPos = window.innerWidth * Math.random();
+    var yPos = window.innerHeight * Math.random() * -1;
+    var velY = 250 + 50 * Math.random();
+    var ball = new Ball(10, 30, new Vector2(xPos, yPos), new Vector2(0, velY));
+    this.mObjects.push(ball);
+  }
+
 
 };
 
@@ -43,6 +56,7 @@ App.prototype.render = function() {
 
   this.ctx.fillStyle = "#ffffff";
   this.ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+
 
   for(var ii in this.mObjects){
     this.mObjects[ii].draw(this.ctx);
@@ -74,6 +88,11 @@ App.prototype.collide = function() {
   }
 
   return contacts;
+}
+
+App.prototype.reset = function() {
+  this.ctx.fillStyle = "#ffffff";
+  this.ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
 }
 
 module.exports = App;

@@ -30,7 +30,6 @@ var Ball = function( _mass, _rad, _pos, _vel ) {
 Ball.prototype = Object.create(RigidBody.prototype);
 Ball.prototype.constructor = Ball;
 
-
 Ball.prototype.update = function( dt ) {
 
   RigidBody.prototype.setGravity.call(this);

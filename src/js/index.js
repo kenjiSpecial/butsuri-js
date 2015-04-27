@@ -1,7 +1,6 @@
 const raf = require('raf');
-var App = require('./apps/app-case04');
+var App = require('./apps/app-case06');
 var app;
-
 
 require('domready')(() => {
   var count = 0;

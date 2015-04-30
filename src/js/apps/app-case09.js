@@ -1,16 +1,51 @@
 var Ball      = require('../components/ball.js');
 var Floor     = require('../components/floor.js');
+var Line      = require('../components/line.js');
 var Box       = require('../components/box.js');
 var AABB      = require('../components/aabb.js');
-
-var Vector2   = require('ks-vector').Vector2;
 var CONSTANTS = require('../components/constants.js');
 var solver    = require('../components/solver.js');
-var Plane     = require('../components/plane.js');
+
+var SpecialBalls = require('../app-components/app09/ball.js');
+var Frame = require('../app-components/app09/frame.js');
+
+var Vector2   = require('ks-vector').Vector2;
 var cw, ch;
 
 
+
 var App = function() {
+  this.onLoadImageHandler = this.onLoadImageHandler.bind(this);
+
+  this.isRender = false;
+
+  this.image = new Image();
+  this.image.src = "./weave.png";
+  this.image.onload = this.onLoadImageHandler;
+  this.image.onerror = function() {
+    console.log('error');
+  }
+}
+
+App.prototype.onLoadImageHandler = function(ev) {
+  this.imageData = [];
+
+
+  var canvas = document.createElement("canvas");
+  canvas.width = this.image.width;
+  canvas.height= this.image.height;
+  var ctx = canvas.getContext('2d');
+
+  ctx.drawImage(this.image, 0, 0);
+
+  this.imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  //console.log(this.imageData);
+
+  this.initialize();
+}
+
+App.prototype.initialize = function(){
+
   this.canvas = document.getElementById('c');
   cw = window.innerWidth;
   ch = window.innerHeight;
@@ -21,52 +56,19 @@ var App = function() {
 
   this.mObjects = [];
 
-  var box = new Box(100 * 100, window.innerWidth/2 - 50, 0, 100, 100);
-  this.mObjects.push(box);
+	this.frame = new Frame(this.mObjects);
 
-  //for(var ii = 0; ii < )
-  var self = this;
-  var count = 0;
+	var spBall = new SpecialBalls(this.mObjects, this.frame, this.imageData);
 
-
-  var loop = function(){
-    count++;
-    var xPos = window.innerWidth/2 - 200 + 400 * Math.random()
-    var rad = 50 + parseInt(50 * Math.random());
-    //var mag = rad * rad;
-    //var ball = new Ball( mag, rad, new Vector2(xPos, 0), new Vector2(0, 500));
-
-    var box = new Box( rad * rad, xPos - rad/2, 0, rad, rad);
-    self.mObjects.push(box);
-
-    if(count < 30) setTimeout(loop, 1000);
-
-  };
-
-  //loop();
-
-  setTimeout(loop, 1000);
-
-  // var ball = new Ball(10, 10, new Vector2(window.innerWidth/2, 0), new Vector2(0, 0));
-  // this.mObjects.push(ball);
-
-  //var plane = new Plane(window.innerWidth/2, 200, (window.innerWidth - 200) );
-  // this.mObjects.push(plane)
-
-  var floor = new Floor( 0, window.innerHeight/2, window.innerWidth, 1 );
-  this.mObjects.push(floor)
-
-
-
+  this.isRender = true;
 
 };
 
 App.prototype.render = function() {
+  if(!this.isRender) return;
+
   var dt = CONSTANTS.timeStep;
 
-  for(var ii in this.mObjects){
-    this.mObjects[ii].update(dt);
-  }
   // ---------------
   this.generateMotionBounds(dt);
   // ---------------
@@ -74,6 +76,10 @@ App.prototype.render = function() {
   this.contacts = this.collide();
   solver(this.contacts);
 
+
+  for(var ii in this.mObjects){
+    this.mObjects[ii].update(dt);
+  }
 
   // -------------------------
   //  draw

@@ -1,12 +1,12 @@
-var Ball      = require('./components/ball.js');
-var Floor     = require('./components/floor.js');
-var Box       = require('./components/box.js');
-var AABB      = require('./components/aabb.js');
+var Ball      = require('../components/ball.js');
+var Floor     = require('../components/floor.js');
+var Box       = require('../components/box.js');
+var AABB      = require('../components/aabb.js');
 
 var Vector2   = require('ks-vector').Vector2;
-var CONSTANTS = require('./components/constants.js');
-var solver    = require('./components/solver.js');
-var Plane     = require('./components/plane.js');
+var CONSTANTS = require('../components/constants.js');
+var solver    = require('../components/solver.js');
+var Plane     = require('../components/plane.js');
 var cw, ch;
 
 

@@ -13,6 +13,8 @@ var Matrix = require('./matrix23.js');
 var Rectangle = function(mass, x, y, wid, hig) {
     this.originalX = x;
     this.originalY = y;
+
+
     RigidBody.call(this, mass, wid, hig, new Vector2(x + wid/2, y + hig/2), new Vector2(0, 0));
 
 
@@ -78,6 +80,7 @@ Rectangle.prototype.setAnchor = function( xx, yy ) {
 Rectangle.prototype.update = function(dt) {
   // this.theta += this.thetaVelocity;
   // this.matrix.set(this.theta, 0, 0);
+  // console.log(this.pos.x);
 
   RigidBody.prototype.setGravity.call(this);
   RigidBody.prototype.update.call(this, dt);

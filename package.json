@@ -21,11 +21,10 @@
     "gl-vec2": "^1.0.0",
     "gsap": "^1.16.1",
     "ks-vector": "^0.1.4",
+    "node-sass": "beta",
     "raf": "^2.0.4",
     "raf-loop": "^1.0.1",
-    "randf": "^1.0.0"
-  },
-  "devDependencies": {
+    "randf": "^1.0.0",
     "babelify": "^5.0.4",
     "browserify": "^9.0.3",
     "budo": "^2.0.1",

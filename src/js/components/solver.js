@@ -1,4 +1,4 @@
-var numInteraction = 5;
+var numInteraction = 10;
 var kFriction = 1;
 var solveType;
 

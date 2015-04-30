@@ -1,5 +1,5 @@
 const raf = require('raf');
-var App = require('./apps/app-case06');
+var App = require('./apps/app-case09.js');
 var app;
 
 require('domready')(() => {
